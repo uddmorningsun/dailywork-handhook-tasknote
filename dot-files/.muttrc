@@ -1,0 +1,144 @@
+# https://lugatgt.org/content/mutt/downloads/presentation.pdf
+set imap_user = "memory.yancy@gmail.com"
+set imap_pass = ""
+
+set smtp_url = "smtp://memory.yancy@gmail.com@smtp.gmail.com:25/"
+
+# Refer to: https://gist.github.com/mottram/387298/2192f09335c3fb06db50c747c4e3833afbc641c9
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set imap_check_subscribed
+set hostname = gmail.com
+set mail_check = 120
+set timeout = 300
+set imap_keepalive = 300
+set postponed = "+[Mail]/Drafts"
+set header_cache=~/.mutt/cache/headers
+set record = "~/.mutt/sent-`date +%F`"
+set message_cachedir=~/.mutt/cache/bodies
+set certificate_file=~/.mutt/certificates
+set move = no
+set include = ask-yes
+set sort = 'threads'
+set sort_aux = 'reverse-last-date-received'
+set auto_tag = yes
+set editor = "vim"
+set quit = ask-yes
+set askcc = yes
+# https://unix.stackexchange.com/questions/43250/how-can-i-make-mutt-show-date-field-of-mail-on-the-index-screen
+set index_format="%4C %Z %D %-15.15L %s"
+
+# "No Authenticators Available" error: install cyrus-sasl-plain package
+# https://groups.google.com/forum/#!topic/qubes-users/hL_UGJo1B9s
+# set smtp_authenticators = "gssapi:login"
+
+# Using msmtp with mutt
+set sendmail="/usr/bin/msmtp"
+set realname = "Chenyang Yan"
+set from = "memory.yancy@gmail.com"
+# Comments refer to: https://fancyseeker.github.io/2015/08/19/mutt/
+set use_from = yes
+set envelope_from = yes
+
+# Multiple accounts
+macro generic "<esc>1" ":set from=memory.yancy@gmail.com"
+
+# Bind keys like vim style, refer to: https://github.com/kulong0105/os-config/blob/master/mutt/.muttrc
+bind pager gg top
+bind pager G bottom
+bind pager j next-line
+bind pager k previous-line
+bind pager \cf next-page
+bind pager \cb previous-page
+bind pager \cj next-entry
+bind pager \ck previous-entry
+bind index gg first-entry
+bind index G last-entry
+bind index \cf next-page
+bind index \cb previous-page
+
+# basic colors -------------------------------------------------------
+color normal        white           black
+color error         red             black
+color tilde         white           black
+color message       cyan            black
+color markers       red             black
+color attachment    brightred       black
+color search        brightmagenta   black
+color status        brightwhite     black
+color indicator     white           blue
+color tree          magenta         black   # arrows in threads
+
+# 列表部分(高亮不同状态的邮件)------------------------------------------
+color index         red             black         "~A"                        # all messages
+color index         brightred       black         "~E"                        # expired messages
+color index         brightcyan      black         "~N"                        # new messages
+color index         brightcyan      black         "~O"                        # old messages
+color index         brightmagenta   black         "~Q"                        # messages that have been replied to
+color index         white           black         "~R"                        # read messages
+color index         brightblue      black         "~U"                        # unread messages
+color index         brightblue      black         "~U~$"                      # unread, unreferenced messages
+color index         brightblue      black         "~v"                        # messages part of a collapsed thread
+color index         brightblue      black         "~P"                        # messages from me
+color index         cyan            black         "~p!~F"                     # messages to me
+color index         brightgreen     black         "~N~p!~F"                   # new messages to me
+color index         brightgreen     black         "~U~p!~F"                   # unread messages to me
+color index         green           black         "~R~p!~F"                   # messages to me
+color index         red             black         "~F"                        # flagged messages
+color index         red             black         "~F~p"                      # flagged messages to me
+color index         red             black         "~N~F"                      # new flagged messages
+color index         red             black         "~N~F~p"                    # new flagged messages to me
+color index         red             black         "~U~F~p"                    # new flagged messages to me
+color index         white           brightmagenta "~D"                        # deleted messages
+color index         white           black         "~v~(!~N!~O)"               # collapsed thread with no unread
+color index         magenta          black         "~v~(~N|~O)"               # collapsed thread with some unread
+color index         magenta           black         "~N~v~(~N)"               # collapsed thread with unread parent
+color index         red             white           "~v~(~F)!~N"              # collapsed thread with flagged, no unread
+color index         yellow          white           "~v~(~F~N)"               # collapsed thread with some unread & flagged
+color index         green           white           "~N~v~(~F~N)"             # collapsed thread with unread parent & flagged
+color index         green           white           "~N~v~(~F)"               # collapsed thread with unread parent, no unread inside, but some flagged
+color index         yellow          red             "~v~(~D)"                 # thread with deleted (doesn't differentiate between all or partial)
+
+# 邮件内容页面邮件头部分高亮 ------------------------------------------
+# color header        brightcyan      default         "^"
+color hdrdefault    brightblue      black
+color header        brightgreen     black         "^(From)"
+color header        brightyellow    black         "^(Subject)"
+
+# 自定义的patch补丁高亮, 方便查看patch
+color   body     red            black    "^-.*"
+color   body     green          black    "^[+].*"
+color   body     brightwhite    black    "^diff --git.*"
+color   body     brightwhite    black    "^index [a-f0-9].*"
+color   body     brightwhite    black    "^\-\-\- a.*"
+color   body     brightwhite    black    "^[\+]{3} b.*"
+color   body     brightyellow   black    "^@@.*"
+color   body     brightmagenta  black    "^(Signed-off-by).*"
+color   body     brightmagenta  black    "^(Reported-by).*"
+color   body     brightmagenta  black    "^(Suggested-by).*"
+color   body     brightmagenta  black    "^(Acked-by).*"
+color   body     brightmagenta  black    "^(Reviewed-by).*"
+color   body     brightmagenta  black    "^\-\-\-$"
+# color   body     brightmagenta  black    "^(Cc).*"
+# color   body     brightmagenta  black    "^(CC).*"
+color   body     white          black    "^( \#define).*"
+color   body     white          black    "^( \#include).*"
+color   body     white          black    "^( \#if).*"
+color   body     whiee          black    "^( \#el).*"
+color   body     white          black    "^( \#endif).*"
+
+# optional highlightling
+color   body    green           black    "LGTM"
+color   body    brightmagenta   black    "-- Commit Summary --"
+color   body    brightmagenta   black    "-- File Changes --"
+color   body    brightmagenta   black    "-- Patch Links --"
+color   body    green           black    "^Merged #.*"
+color   body    red             black    "^Closed #.*"
+color   body    brightblue      black    "^Reply to this email.*"
+
+# 嵌套引文不同层的颜色
+color quoted        blue            black
+color quoted1       magenta         black
+color quoted2       cyan            black
+color quoted3       yellow          black
+color quoted4       red             black
