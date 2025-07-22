@@ -1,0 +1,28 @@
+$ git branch -vvv
+* main ae24013 [origin/main] sync charts by action
+
+$ git diff
+diff --git a/devops/charts/agent/charts/jenkins/values.yaml b/devops/charts/agent/charts/jenkins/values.yaml
+index 9a72e6b..fd6ce5a 100755
+--- a/devops/charts/agent/charts/jenkins/values.yaml
++++ b/devops/charts/agent/charts/jenkins/values.yaml
+@@ -236,6 +236,19 @@ Master:
+       roleBasedAuthenticationStrategy.assignRole(RoleType.Global, authenticatedRole, 'authenticated');
+       println "Read role created...OK"
+
++      def globalRoleAnonymous = "anonymous-read"
++      Set<Permission> anonymousPermissions = new HashSet<Permission>();
++
++      anonymousPermissions.add(Permission.fromId("hudson.model.Hudson.Read")); // 查看Jenkins首页
++      anonymousPermissions.add(Permission.fromId("hudson.model.Item.Discover")); // 发现Job
++      anonymousPermissions.add(Permission.fromId("hudson.model.Item.Read")); // 读取Job配置
++      anonymousPermissions.add(Permission.fromId("hudson.model.View.Read")); // 查看视图
++
++      Role anonymousRole = new Role(globalRoleAnonymous, anonymousPermissions);
++      roleBasedAuthenticationStrategy.addRole(RoleType.Global, anonymousRole);
++      roleBasedAuthenticationStrategy.assignRole(RoleType.Global, anonymousRole, "anonymous");
++      println "Anonymous Read role created...OK"
++
+       // Save the state
+       println "Saving changes."
+       jenkinsInstance.save()
